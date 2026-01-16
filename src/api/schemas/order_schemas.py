@@ -116,7 +116,7 @@ class OrderResponse(BaseModel):
         return cls(
             id=order.id,
             customer_id=order.customer_id,
-            status=order.status,
+            status=order.status.value,  # Convert enum to string
             items=[
                 OrderItemResponse(
                     product_id=item.product_id,

@@ -7,7 +7,6 @@ from fastapi import FastAPI
 
 from src.api.routes import orders
 from src.core.entities.product import Product
-from src.infrastructure.database.memory_repositories import InMemoryProductRepository
 
 app = FastAPI(
     title="Сервис заказов",
@@ -51,7 +50,7 @@ app.include_router(orders.router, prefix="/api/v1")
 @app.on_event("startup")
 async def startup_event() -> None:
     """Initialize test data on startup."""
-    # Get product repository and add some test products
+    # Use dependency to get repository (proper DI)
     from src.api.dependencies import get_product_repository
 
     product_repo = get_product_repository()

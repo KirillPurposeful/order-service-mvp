@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from uuid import UUID, uuid4
 
+from src.core.value_objects.order_status import OrderStatus
+
 
 @dataclass
 class OrderItem:
@@ -34,17 +36,13 @@ class Order:
     id: UUID = field(default_factory=uuid4)
     customer_id: UUID = field(default_factory=uuid4)
     items: list[OrderItem] = field(default_factory=list)
-    status: str = "PENDING"
+    status: OrderStatus = OrderStatus.PENDING
 
     def add_item(
         self, product_id: UUID, product_name: str, quantity: int, price: Decimal
     ) -> None:
         """Add item to order."""
-        if quantity <= 0:
-            raise ValueError("Quantity must be positive")
-        if price < 0:
-            raise ValueError("Price cannot be negative")
-
+        # Validation happens in OrderItem.__post_init__
         self.items.append(
             OrderItem(
                 product_id=product_id,
@@ -62,15 +60,15 @@ class Order:
         """Confirm order (business rule)."""
         if not self.items:
             raise ValueError("Cannot confirm empty order")
-        if self.status != "PENDING":
-            raise ValueError(f"Cannot confirm order with status {self.status}")
-        self.status = "CONFIRMED"
+        if self.status != OrderStatus.PENDING:
+            raise ValueError(f"Cannot confirm order with status {self.status.value}")
+        self.status = OrderStatus.CONFIRMED
 
     def cancel(self) -> None:
         """Cancel order."""
-        if self.status == "DELIVERED":
+        if self.status == OrderStatus.DELIVERED:
             raise ValueError("Cannot cancel delivered order")
-        if self.status == "CANCELLED":
+        if self.status == OrderStatus.CANCELLED:
             raise ValueError("Order already cancelled")
-        self.status = "CANCELLED"
+        self.status = OrderStatus.CANCELLED
 

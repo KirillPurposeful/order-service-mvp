@@ -7,11 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from src.api.dependencies import get_order_service
 from src.api.schemas.order_schemas import CreateOrderRequest, OrderResponse
 from src.core.exceptions import InsufficientStockError, ProductNotFoundError
-from src.services.order_service import (
-    CreateOrderItemRequest,
-    CreateOrderRequest as ServiceCreateOrderRequest,
-    OrderService,
-)
+from src.services.order_service import OrderService
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
@@ -98,6 +94,12 @@ async def create_order(
     Скопируйте эти ID и используйте в запросе ниже 👇
     """
     try:
+        # Import service DTOs only here (late binding)
+        from src.services.order_service import (
+            CreateOrderItemRequest,
+            CreateOrderRequest as ServiceCreateOrderRequest,
+        )
+
         # Convert API request to service request
         service_request = ServiceCreateOrderRequest(
             customer_id=request.customer_id,
