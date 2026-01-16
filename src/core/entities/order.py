@@ -54,7 +54,7 @@ class Order:
 
     def calculate_total(self) -> Decimal:
         """Calculate order total."""
-        return sum(item.subtotal for item in self.items)
+        return sum((item.subtotal for item in self.items), Decimal("0"))
 
     def confirm(self) -> None:
         """Confirm order (business rule)."""
