@@ -225,3 +225,44 @@ async def delete_order(
             detail="Заказ не найден"
         )
 
+
+@router.get(
+    "/demo",
+    response_model=OrderResponse,
+    summary="🎬 Демо заказ",
+    description="Показать пример готового заказа (не создает реальный заказ)",
+    tags=["demo"]
+)
+async def get_demo_order() -> OrderResponse:
+    """
+    Получить демонстрационный заказ.
+
+    **Просто нажмите Execute!** Сразу увидите как выглядит реальный ответ API.
+
+    Это НЕ создаёт настоящий заказ, просто показывает формат ответа.
+    """
+    from decimal import Decimal
+    from src.core.entities.order import Order, OrderItem
+    from uuid import UUID
+
+    # Create demo order
+    demo_order = Order(
+        id=UUID("7c9e6679-7425-40de-944b-e07fc1f90ae7"),
+        customer_id=UUID("550e8400-e29b-41d4-a716-446655440000")
+    )
+
+    demo_order.add_item(
+        product_id=UUID("550e8400-e29b-41d4-a716-446655440001"),
+        product_name="Laptop",
+        quantity=1,
+        price=Decimal("999.99")
+    )
+
+    demo_order.add_item(
+        product_id=UUID("550e8400-e29b-41d4-a716-446655440002"),
+        product_name="Mouse",
+        quantity=2,
+        price=Decimal("29.99")
+    )
+
+    return OrderResponse.from_entity(demo_order)
