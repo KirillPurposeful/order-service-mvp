@@ -1,6 +1,7 @@
 """Order routes."""
 
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -132,4 +133,90 @@ async def create_order(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         ) from e
+
+
+@router.get(
+    "/",
+    response_model=list[OrderResponse],
+    summary="Список всех заказов",
+    description="Получить все созданные заказы",
+)
+async def get_all_orders(
+    order_service: Annotated[OrderService, Depends(get_order_service)],
+) -> list[OrderResponse]:
+    """
+    Получить список всех заказов.
+
+    Возвращает все заказы, созданные в системе.
+    """
+    orders = await order_service.get_all_orders()
+    return [OrderResponse.from_entity(order) for order in orders]
+
+
+@router.get(
+    "/{order_id}",
+    response_model=OrderResponse,
+    summary="Найти заказ по ID",
+    description="Получить заказ по его уникальному идентификатору",
+    responses={
+        404: {
+            "description": "❌ Заказ не найден",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Заказ не найден"}
+                }
+            }
+        }
+    }
+)
+async def get_order(
+    order_id: UUID,
+    order_service: Annotated[OrderService, Depends(get_order_service)],
+) -> OrderResponse:
+    """
+    Получить заказ по ID.
+
+    Введите ID заказа из списка или созданного ранее заказа.
+    """
+    order = await order_service.get_order_by_id(order_id)
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Заказ не найден"
+        )
+    return OrderResponse.from_entity(order)
+
+
+@router.delete(
+    "/{order_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Удалить заказ",
+    description="Удалить заказ из системы",
+    responses={
+        204: {"description": "✅ Заказ успешно удален"},
+        404: {
+            "description": "❌ Заказ не найден",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Заказ не найден"}
+                }
+            }
+        }
+    }
+)
+async def delete_order(
+    order_id: UUID,
+    order_service: Annotated[OrderService, Depends(get_order_service)],
+) -> None:
+    """
+    Удалить заказ по ID.
+
+    Заказ будет полностью удален из системы.
+    """
+    success = await order_service.cancel_order(order_id)
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Заказ не найден"
+        )
 

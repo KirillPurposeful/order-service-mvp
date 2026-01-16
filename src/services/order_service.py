@@ -68,3 +68,15 @@ class OrderService:
 
         return order
 
+    async def get_all_orders(self) -> list[Order]:
+        """Get all orders."""
+        return await self._order_repo.get_all()
+
+    async def get_order_by_id(self, order_id: UUID) -> Order | None:
+        """Get order by ID."""
+        return await self._order_repo.get_by_id(order_id)
+
+    async def cancel_order(self, order_id: UUID) -> bool:
+        """Cancel order."""
+        return await self._order_repo.delete(order_id)
+

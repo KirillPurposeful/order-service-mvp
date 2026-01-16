@@ -18,6 +18,14 @@ class OrderRepository(Protocol):
         """Get order by ID."""
         ...
 
+    async def get_all(self) -> list[Order]:
+        """Get all orders."""
+        ...
+
+    async def delete(self, order_id: UUID) -> bool:
+        """Delete order by ID."""
+        ...
+
 
 class ProductRepository(Protocol):
     """Product repository interface."""

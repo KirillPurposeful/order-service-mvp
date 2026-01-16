@@ -20,6 +20,17 @@ class InMemoryOrderRepository:
         """Get order by ID."""
         return self._orders.get(order_id)
 
+    async def get_all(self) -> list[Order]:
+        """Get all orders."""
+        return list(self._orders.values())
+
+    async def delete(self, order_id: UUID) -> bool:
+        """Delete order by ID."""
+        if order_id in self._orders:
+            del self._orders[order_id]
+            return True
+        return False
+
 
 class InMemoryProductRepository:
     """In-memory product repository."""
