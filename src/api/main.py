@@ -1,12 +1,17 @@
 """FastAPI application."""
 
 from decimal import Decimal
-from uuid import uuid4
+from uuid import UUID
 
 from fastapi import FastAPI
 
 from src.api.routes import orders
 from src.core.entities.product import Product
+
+# Fixed product IDs for consistent Swagger examples
+LAPTOP_ID = UUID("550e8400-e29b-41d4-a716-446655440001")
+MOUSE_ID = UUID("550e8400-e29b-41d4-a716-446655440002")
+KEYBOARD_ID = UUID("550e8400-e29b-41d4-a716-446655440003")
 
 app = FastAPI(
     title="Сервис заказов",
@@ -55,24 +60,24 @@ async def startup_event() -> None:
 
     product_repo = get_product_repository()
 
-    # Add test products
+    # Add test products with fixed IDs
     test_products = [
         Product(
-            id=uuid4(),
+            id=LAPTOP_ID,
             name="Laptop",
             description="High-performance laptop",
             price=Decimal("999.99"),
             stock=10,
         ),
         Product(
-            id=uuid4(),
+            id=MOUSE_ID,
             name="Mouse",
             description="Wireless mouse",
             price=Decimal("29.99"),
             stock=50,
         ),
         Product(
-            id=uuid4(),
+            id=KEYBOARD_ID,
             name="Keyboard",
             description="Mechanical keyboard",
             price=Decimal("89.99"),

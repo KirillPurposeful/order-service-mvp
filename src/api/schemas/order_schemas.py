@@ -14,7 +14,7 @@ class OrderItemRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "product_id": "123e4567-e89b-12d3-a456-426614174000",
+                "product_id": "550e8400-e29b-41d4-a716-446655440001",
                 "quantity": 2
             }
         }
@@ -33,11 +33,11 @@ class CreateOrderRequest(BaseModel):
                 "customer_id": "550e8400-e29b-41d4-a716-446655440000",
                 "items": [
                     {
-                        "product_id": "123e4567-e89b-12d3-a456-426614174000",
+                        "product_id": "550e8400-e29b-41d4-a716-446655440001",
                         "quantity": 1
                     },
                     {
-                        "product_id": "234e5678-e89b-12d3-a456-426614174001",
+                        "product_id": "550e8400-e29b-41d4-a716-446655440002",
                         "quantity": 2
                     }
                 ]
@@ -58,7 +58,7 @@ class OrderItemResponse(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "product_id": "123e4567-e89b-12d3-a456-426614174000",
+                "product_id": "550e8400-e29b-41d4-a716-446655440001",
                 "product_name": "Laptop",
                 "quantity": 1,
                 "price": "999.99",
@@ -85,14 +85,14 @@ class OrderResponse(BaseModel):
                 "status": "PENDING",
                 "items": [
                     {
-                        "product_id": "123e4567-e89b-12d3-a456-426614174000",
+                        "product_id": "550e8400-e29b-41d4-a716-446655440001",
                         "product_name": "Laptop",
                         "quantity": 1,
                         "price": "999.99",
                         "subtotal": "999.99"
                     },
                     {
-                        "product_id": "234e5678-e89b-12d3-a456-426614174001",
+                        "product_id": "550e8400-e29b-41d4-a716-446655440002",
                         "product_name": "Mouse",
                         "quantity": 2,
                         "price": "29.99",
