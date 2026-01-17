@@ -17,11 +17,11 @@ router = APIRouter(prefix="/orders", tags=["orders"])
     "/",
     response_model=OrderResponse,
     status_code=status.HTTP_201_CREATED,
-    summary="Создать заказ",
-    response_description="Заказ успешно создан",
+    summary="Create order",
+    response_description="Order successfully created",
     responses={
         201: {
-            "description": "✅ Заказ создан, товар зарезервирован",
+            "description": "✅ Order created, stock reserved",
             "content": {
                 "application/json": {
                     "example": {
@@ -43,7 +43,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
             }
         },
         400: {
-            "description": "❌ Товара не хватает на складе",
+            "description": "❌ Not enough stock",
             "content": {
                 "application/json": {
                     "example": {"detail": "Insufficient stock: 10 available, 999 requested"}
@@ -51,7 +51,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
             }
         },
         404: {
-            "description": "❌ Такого товара не существует",
+            "description": "❌ Product not found",
             "content": {
                 "application/json": {
                     "example": {"detail": "Product 00000000-0000-0000-0000-000000000000 not found"}
@@ -59,7 +59,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
             }
         },
         422: {
-            "description": "❌ Некорректные данные в запросе",
+            "description": "❌ Invalid request data",
         }
     }
 )
@@ -68,22 +68,22 @@ async def create_order(
     order_service: Annotated[OrderService, Depends(get_order_service)],
 ) -> OrderResponse:
     """
-    Создать заказ из списка товаров.
+    Create order from products list.
 
-    Система автоматически:
-    - Проверит наличие товара
-    - Зарезервирует его на складе
-    - Посчитает общую сумму
+    System automatically:
+    - Checks product availability
+    - Reserves stock
+    - Calculates total price
 
-    ### Доступные товары (фиксированные ID):
+    ### Available products (fixed IDs):
 
-    - **Laptop** - `550e8400-e29b-41d4-a716-446655440001` (999.99₽, в наличии: 10)
-    - **Mouse** - `550e8400-e29b-41d4-a716-446655440002` (29.99₽, в наличии: 50)
-    - **Keyboard** - `550e8400-e29b-41d4-a716-446655440003` (89.99₽, в наличии: 25)
+    - **Laptop** - `550e8400-e29b-41d4-a716-446655440001` ($999.99, stock: 10)
+    - **Mouse** - `550e8400-e29b-41d4-a716-446655440002` ($29.99, stock: 50)
+    - **Keyboard** - `550e8400-e29b-41d4-a716-446655440003` ($89.99, stock: 25)
 
-    ### Пример запроса:
+    ### Example request:
 
-    Используйте ID выше ⬆️ - они всегда одинаковые!
+    Use IDs above ⬆️ - they're always the same!
 
     ```json
     {
@@ -97,7 +97,7 @@ async def create_order(
     }
     ```
 
-    Просто нажмите **"Try it out"** и **"Execute"** - пример уже готов! ✨
+    Just click **"Try it out"** and **"Execute"** - example is ready! ✨
     """
     try:
         # Import service DTOs only here (late binding)
@@ -143,16 +143,16 @@ async def create_order(
 @router.get(
     "/",
     response_model=list[OrderResponse],
-    summary="Список всех заказов",
-    description="Получить все созданные заказы",
+    summary="Get all orders",
+    description="Get all created orders",
 )
 async def get_all_orders(
     order_service: Annotated[OrderService, Depends(get_order_service)],
 ) -> list[OrderResponse]:
     """
-    Получить список всех заказов.
+    Get list of all orders.
 
-    Возвращает все заказы, созданные в системе.
+    Returns all orders created in the system.
     """
     orders = await order_service.get_all_orders()
     return [OrderResponse.from_entity(order) for order in orders]
@@ -161,14 +161,14 @@ async def get_all_orders(
 @router.get(
     "/{order_id}",
     response_model=OrderResponse,
-    summary="Найти заказ по ID",
-    description="Получить заказ по его уникальному идентификатору",
+    summary="Find order by ID",
+    description="Get order by unique identifier",
     responses={
         404: {
-            "description": "❌ Заказ не найден",
+            "description": "❌ Order not found",
             "content": {
                 "application/json": {
-                    "example": {"detail": "Заказ не найден"}
+                    "example": {"detail": "Order not found"}
                 }
             }
         }
@@ -179,15 +179,15 @@ async def get_order(
     order_service: Annotated[OrderService, Depends(get_order_service)],
 ) -> OrderResponse:
     """
-    Получить заказ по ID.
+    Get order by ID.
 
-    Введите ID заказа из списка или созданного ранее заказа.
+    Enter order ID from list or previously created order.
     """
     order = await order_service.get_order_by_id(order_id)
     if not order:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Заказ не найден"
+            detail="Order not found"
         )
     return OrderResponse.from_entity(order)
 
@@ -195,15 +195,15 @@ async def get_order(
 @router.delete(
     "/{order_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Удалить заказ",
-    description="Удалить заказ из системы",
+    summary="Delete order",
+    description="Delete order from system",
     responses={
-        204: {"description": "✅ Заказ успешно удален"},
+        204: {"description": "✅ Order successfully deleted"},
         404: {
-            "description": "❌ Заказ не найден",
+            "description": "❌ Order not found",
             "content": {
                 "application/json": {
-                    "example": {"detail": "Заказ не найден"}
+                    "example": {"detail": "Order not found"}
                 }
             }
         }
@@ -214,32 +214,32 @@ async def delete_order(
     order_service: Annotated[OrderService, Depends(get_order_service)],
 ) -> None:
     """
-    Удалить заказ по ID.
+    Delete order by ID.
 
-    Заказ будет полностью удален из системы.
+    Order will be completely removed from the system.
     """
     success = await order_service.cancel_order(order_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Заказ не найден"
+            detail="Order not found"
         )
 
 
 @router.get(
     "/demo",
     response_model=OrderResponse,
-    summary="🎬 Демо заказ",
-    description="Показать пример готового заказа (не создает реальный заказ)",
+    summary="🎬 Demo order",
+    description="Show example of complete order (doesn't create real order)",
     tags=["demo"]
 )
 async def get_demo_order() -> OrderResponse:
     """
-    Получить демонстрационный заказ.
+    Get demonstration order.
 
-    **Просто нажмите Execute!** Сразу увидите как выглядит реальный ответ API.
+    **Just click Execute!** You'll immediately see what real API response looks like.
 
-    Это НЕ создаёт настоящий заказ, просто показывает формат ответа.
+    This does NOT create actual order, just shows response format.
     """
     from decimal import Decimal
     from src.core.entities.order import Order, OrderItem

@@ -9,7 +9,7 @@ from src.core.entities.order import Order
 
 
 class OrderItemRequest(BaseModel):
-    """Товар в заказе."""
+    """Order item in request."""
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -20,12 +20,12 @@ class OrderItemRequest(BaseModel):
         }
     )
 
-    product_id: UUID = Field(description="ID товара (скопируйте из консоли)")
-    quantity: int = Field(gt=0, description="Сколько штук (минимум 1)")
+    product_id: UUID = Field(description="Product ID (use fixed IDs from docs)")
+    quantity: int = Field(gt=0, description="Quantity (minimum 1)")
 
 
 class CreateOrderRequest(BaseModel):
-    """Запрос на создание заказа."""
+    """Create order request."""
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -45,10 +45,10 @@ class CreateOrderRequest(BaseModel):
         }
     )
 
-    customer_id: UUID = Field(description="ID покупателя (можете использовать из примера)")
+    customer_id: UUID = Field(description="Customer ID (use example UUID)")
     items: list[OrderItemRequest] = Field(
         min_length=1,
-        description="Список товаров (минимум 1)"
+        description="List of items (minimum 1)"
     )
 
 

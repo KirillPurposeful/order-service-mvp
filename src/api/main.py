@@ -14,29 +14,27 @@ MOUSE_ID = UUID("550e8400-e29b-41d4-a716-446655440002")
 KEYBOARD_ID = UUID("550e8400-e29b-41d4-a716-446655440003")
 
 app = FastAPI(
-    title="Сервис заказов",
+    title="Order Service",
     description="""
-## 🛒 Простой сервис для управления заказами
+## 🛒 Simple Order Management Service
 
-Этот API позволяет создавать заказы и автоматически резервировать товары на складе.
+This API allows you to create orders and automatically reserve products in stock.
 
-### Что умеет:
+### Features:
 
-* Создавать заказы из нескольких товаров
-* Проверять наличие товара на складе
-* Считать итоговую стоимость автоматически
+* Create orders with multiple products
+* Automatic stock availability check
+* Auto-calculate total price
 
-### Как попробовать:
+### How to try:
 
-**Шаг 1:** При запуске сервера в консоли появятся ID тестовых товаров (Laptop, Mouse, Keyboard)
+**Step 1:** Products are available with fixed IDs (see below)
 
-**Шаг 2:** Скопируйте эти ID
+**Step 2:** Use endpoint below ⬇️ and click "Try it out"
 
-**Шаг 3:** Используйте endpoint ниже ⬇️ и нажмите "Try it out"
+**Step 3:** Click "Execute"
 
-**Шаг 4:** Вставьте скопированные ID в запрос и нажмите "Execute"
-
-Готово! 🎉
+Done! 🎉
     """,
     version="0.1.0",
     contact={
