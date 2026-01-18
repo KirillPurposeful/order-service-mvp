@@ -9,19 +9,19 @@ from src.core.interfaces.repositories import OrderRepository, ProductRepository
 
 
 @dataclass
-class CreateOrderItemRequest:
-    """Create order item request."""
+class CreateOrderItemCommand:
+    """Create order item command."""
 
     product_id: UUID
     quantity: int
 
 
 @dataclass
-class CreateOrderRequest:
-    """Create order request."""
+class CreateOrderCommand:
+    """Create order command."""
 
     customer_id: UUID
-    items: list[CreateOrderItemRequest]
+    items: list[CreateOrderItemCommand]
 
 
 class OrderService:
@@ -35,7 +35,7 @@ class OrderService:
         self._order_repo = order_repo
         self._product_repo = product_repo
 
-    async def create_order(self, request: CreateOrderRequest) -> Order:
+    async def create_order(self, request: CreateOrderCommand) -> Order:
         """Create new order with stock reservation."""
         # Create order entity
         order = Order(customer_id=request.customer_id)

@@ -102,15 +102,15 @@ async def create_order(
     try:
         # Import service DTOs only here (late binding)
         from src.services.order_service import (
-            CreateOrderItemRequest,
-            CreateOrderRequest as ServiceCreateOrderRequest,
+            CreateOrderItemCommand,
+            CreateOrderCommand,
         )
 
-        # Convert API request to service request
-        service_request = ServiceCreateOrderRequest(
+        # Convert API request to service command
+        service_command = CreateOrderCommand(
             customer_id=request.customer_id,
             items=[
-                CreateOrderItemRequest(
+                CreateOrderItemCommand(
                     product_id=item.product_id,
                     quantity=item.quantity,
                 )
@@ -118,7 +118,7 @@ async def create_order(
             ],
         )
 
-        order = await order_service.create_order(service_request)
+        order = await order_service.create_order(service_command)
         return OrderResponse.from_entity(order)
 
     except ProductNotFoundError as e:
