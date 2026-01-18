@@ -34,7 +34,6 @@ htmlcov/
 .dmypy.json
 dmypy.json
 .ruff_cache/
-pytest.ini
 tests/
 
 # Environment
