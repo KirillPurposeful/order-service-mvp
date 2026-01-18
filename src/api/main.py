@@ -1,5 +1,6 @@
 """FastAPI application."""
 
+from contextlib import asynccontextmanager
 from decimal import Decimal
 from uuid import UUID
 
@@ -13,47 +14,11 @@ LAPTOP_ID = UUID("550e8400-e29b-41d4-a716-446655440001")
 MOUSE_ID = UUID("550e8400-e29b-41d4-a716-446655440002")
 KEYBOARD_ID = UUID("550e8400-e29b-41d4-a716-446655440003")
 
-app = FastAPI(
-    title="Order Service",
-    description="""
-## 🛒 Simple Order Management Service
 
-This API allows you to create orders and automatically reserve products in stock.
-
-### Features:
-
-* Create orders with multiple products
-* Automatic stock availability check
-* Auto-calculate total price
-
-### How to try:
-
-**Step 1:** Products are available with fixed IDs (see below)
-
-**Step 2:** Use endpoint below ⬇️ and click "Try it out"
-
-**Step 3:** Click "Execute"
-
-Done! 🎉
-    """,
-    version="0.1.0",
-    contact={
-        "name": "Order Service Team",
-        "url": "https://github.com/yourrepo/order-service",
-    },
-    license_info={
-        "name": "MIT",
-    },
-)
-
-# Include routers
-app.include_router(orders.router, prefix="/api/v1")
-
-
-@app.on_event("startup")
-async def startup_event() -> None:
-    """Initialize test data on startup."""
-    # Use dependency to get repository (proper DI)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan events."""
+    # Startup: Initialize test data
     from src.api.dependencies import get_product_repository
 
     product_repo = get_product_repository()
@@ -90,6 +55,49 @@ async def startup_event() -> None:
     print(f"   - {test_products[0].name} (ID: {test_products[0].id})")
     print(f"   - {test_products[1].name} (ID: {test_products[1].id})")
     print(f"   - {test_products[2].name} (ID: {test_products[2].id})")
+
+    yield
+
+    # Shutdown: cleanup if needed
+    print("👋 Application shutdown")
+
+
+app = FastAPI(
+    title="Order Service",
+    description="""
+## 🛒 Simple Order Management Service
+
+This API allows you to create orders and automatically reserve products in stock.
+
+### Features:
+
+* Create orders with multiple products
+* Automatic stock availability check
+* Auto-calculate total price
+
+### How to try:
+
+**Step 1:** Products are available with fixed IDs (see below)
+
+**Step 2:** Use endpoint below ⬇️ and click "Try it out"
+
+**Step 3:** Click "Execute"
+
+Done! 🎉
+    """,
+    version="0.1.0",
+    contact={
+        "name": "Order Service Team",
+        "url": "https://github.com/yourrepo/order-service",
+    },
+    license_info={
+        "name": "MIT",
+    },
+    lifespan=lifespan,
+)
+
+# Include routers
+app.include_router(orders.router, prefix="/api/v1")
 
 
 @app.get("/")
