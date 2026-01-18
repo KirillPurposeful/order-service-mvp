@@ -83,7 +83,7 @@ async def create_order(
 
     ### Example request:
 
-    Use IDs above ⬆️ - they're always the same!
+    Use IDs above - they're always the same!
 
     ```json
     {
@@ -97,28 +97,16 @@ async def create_order(
     }
     ```
 
-    Just click **"Try it out"** and **"Execute"** - example is ready! ✨
+    Just click **"Try it out"** and **"Execute"** - example is ready!
     """
     try:
-        # Import service DTOs only here (late binding)
-        from src.services.order_service import (
-            CreateOrderItemCommand,
-            CreateOrderCommand,
-        )
+        # Map API DTO to domain parameters
+        items = [(item.product_id, item.quantity) for item in request.items]
 
-        # Convert API request to service command
-        service_command = CreateOrderCommand(
-            customer_id=request.customer_id,
-            items=[
-                CreateOrderItemCommand(
-                    product_id=item.product_id,
-                    quantity=item.quantity,
-                )
-                for item in request.items
-            ],
-        )
+        # Call service with domain parameters
+        order = await order_service.create_order(request.customer_id, items)
 
-        order = await order_service.create_order(service_command)
+        # Map domain to response DTO
         return OrderResponse.from_entity(order)
 
     except ProductNotFoundError as e:
