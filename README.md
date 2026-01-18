@@ -1,32 +1,32 @@
 # Order Service - Quick Start
 
-## Запуск
+## Run
 
 ```bash
 python run.py
 ```
 
-Сервер запустится на `http://localhost:8002`
+Server starts at `http://localhost:8002`
 
-## Использование API
+## API Usage
 
-### Swagger UI (самый простой способ)
+### Swagger UI (easiest way)
 
-Откройте: **http://localhost:8002/docs**
+Open: **http://localhost:8002/docs**
 
-### Шаг 1: Используйте фиксированные ID товаров
+### Step 1: Use fixed product IDs
 
-**Товары всегда доступны с одинаковыми ID:**
+**Products are always available with same IDs:**
 
 ```
-Laptop   - 550e8400-e29b-41d4-a716-446655440001 (999.99₽)
-Mouse    - 550e8400-e29b-41d4-a716-446655440002 (29.99₽)
-Keyboard - 550e8400-e29b-41d4-a716-446655440003 (89.99₽)
+Laptop   - 550e8400-e29b-41d4-a716-446655440001 ($999.99)
+Mouse    - 550e8400-e29b-41d4-a716-446655440002 ($29.99)
+Keyboard - 550e8400-e29b-41d4-a716-446655440003 ($89.99)
 ```
 
-**Не нужно искать ID в консоли!** Просто используйте эти ⬆️
+**No need to search for IDs in console!** Just use these IDs above.
 
-### Шаг 2: Создайте заказ
+### Step 2: Create order
 
 **POST** `/api/v1/orders/`
 
@@ -42,9 +42,9 @@ Keyboard - 550e8400-e29b-41d4-a716-446655440003 (89.99₽)
 }
 ```
 
-**Просто нажмите "Try it out" → "Execute" в Swagger!** Пример уже заполнен ✨
+**Just click "Try it out" → "Execute" in Swagger!** Example is already filled.
 
-**Ответ:**
+**Response:**
 ```json
 {
   "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
@@ -55,19 +55,19 @@ Keyboard - 550e8400-e29b-41d4-a716-446655440003 (89.99₽)
 }
 ```
 
-**Скопируйте `id` заказа!**
+**Copy order `id`!**
 
-### Шаг 3: Получите заказ по ID
+### Step 3: Get order by ID
 
 **GET** `/api/v1/orders/{order_id}`
 
-Вставьте скопированный ID вместо `{order_id}`
+Paste copied ID instead of `{order_id}`
 
-### Шаг 4: Список всех заказов
+### Step 4: Get all orders
 
 **GET** `/api/v1/orders/`
 
-### Шаг 5: Удалить заказ
+### Step 5: Delete order
 
 **DELETE** `/api/v1/orders/{order_id}`
 
@@ -75,27 +75,28 @@ Keyboard - 550e8400-e29b-41d4-a716-446655440003 (89.99₽)
 
 ## Endpoints
 
-| Method | Path | Описание |
-|--------|------|----------|
-| POST | `/api/v1/orders/` | Создать заказ |
-| GET | `/api/v1/orders/` | Список всех заказов |
-| GET | `/api/v1/orders/{id}` | Получить заказ по ID |
-| DELETE | `/api/v1/orders/{id}` | Удалить заказ |
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/v1/orders/` | Create order |
+| GET | `/api/v1/orders/` | Get all orders |
+| GET | `/api/v1/orders/{id}` | Get order by ID |
+| DELETE | `/api/v1/orders/{id}` | Delete order |
 | GET | `/health` | Health check |
 
 ---
 
-## Архитектура
+## Architecture
 
-**Clean Architecture** (Onion) - 4 слоя:
+**Clean Architecture** (Onion) - 4 layers:
 
 - `src/core/` - Domain (entities, value objects, exceptions)
 - `src/services/` - Application (business logic)
 - `src/infrastructure/` - Infrastructure (repositories)
 - `src/api/` - Presentation (HTTP endpoints)
 
-**Технологии:**
+**Technologies:**
 - FastAPI + Pydantic
-- Python 3.11+ с полной типизацией
-- In-memory storage (легко заменить на PostgreSQL)
+- Python 3.12.9 with full typing
+- In-memory storage (easy to replace with PostgreSQL)
+
 

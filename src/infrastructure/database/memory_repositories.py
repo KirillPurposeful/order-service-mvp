@@ -1,48 +1,18 @@
 """In-memory repository implementations for MVP."""
 
-from uuid import UUID
-
 from src.core.entities.order import Order
 from src.core.entities.product import Product
+from src.infrastructure.database.base_repository import BaseRepository
 
 
-class InMemoryOrderRepository:
+class InMemoryOrderRepository(BaseRepository[Order]):
     """In-memory order repository."""
 
-    def __init__(self) -> None:
-        self._orders: dict[UUID, Order] = {}
-
-    async def save(self, order: Order) -> None:
-        """Save order."""
-        self._orders[order.id] = order
-
-    async def get_by_id(self, order_id: UUID) -> Order | None:
-        """Get order by ID."""
-        return self._orders.get(order_id)
-
-    async def get_all(self) -> list[Order]:
-        """Get all orders."""
-        return list(self._orders.values())
-
-    async def delete(self, order_id: UUID) -> bool:
-        """Delete order by ID."""
-        if order_id in self._orders:
-            del self._orders[order_id]
-            return True
-        return False
+    pass
 
 
-class InMemoryProductRepository:
+class InMemoryProductRepository(BaseRepository[Product]):
     """In-memory product repository."""
 
-    def __init__(self) -> None:
-        self._products: dict[UUID, Product] = {}
-
-    async def get_by_id(self, product_id: UUID) -> Product | None:
-        """Get product by ID."""
-        return self._products.get(product_id)
-
-    async def save(self, product: Product) -> None:
-        """Save product."""
-        self._products[product.id] = product
+    pass
 
