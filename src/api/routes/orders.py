@@ -21,7 +21,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
     response_description="Order successfully created",
     responses={
         201: {
-            "description": "✅ Order created, stock reserved",
+            "description": "Order created, stock reserved",
             "content": {
                 "application/json": {
                     "example": {
@@ -43,7 +43,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
             }
         },
         400: {
-            "description": "❌ Not enough stock",
+            "description": "Not enough stock",
             "content": {
                 "application/json": {
                     "example": {"detail": "Insufficient stock: 10 available, 999 requested"}
@@ -51,7 +51,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
             }
         },
         404: {
-            "description": "❌ Product not found",
+            "description": "Product not found",
             "content": {
                 "application/json": {
                     "example": {"detail": "Product 00000000-0000-0000-0000-000000000000 not found"}
@@ -59,7 +59,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
             }
         },
         422: {
-            "description": "❌ Invalid request data",
+            "description": "Invalid request data",
         }
     }
 )
@@ -147,13 +147,54 @@ async def get_all_orders(
 
 
 @router.get(
+    "/demo",
+    response_model=OrderResponse,
+    summary="Demo order",
+    description="Show example of complete order (doesn't create real order)",
+)
+async def get_demo_order() -> OrderResponse:
+    """
+    Get demonstration order.
+
+    **Just click Execute!** You'll immediately see what real API response looks like.
+
+    This does NOT create actual order, just shows response format.
+    """
+    from decimal import Decimal
+    from src.core.entities.order import Order
+    from uuid import UUID
+
+    # Create demo order
+    demo_order = Order(
+        id=UUID("7c9e6679-7425-40de-944b-e07fc1f90ae7"),
+        customer_id=UUID("550e8400-e29b-41d4-a716-446655440000")
+    )
+
+    demo_order.add_item(
+        product_id=UUID("550e8400-e29b-41d4-a716-446655440001"),
+        product_name="Laptop",
+        quantity=1,
+        price=Decimal("999.99")
+    )
+
+    demo_order.add_item(
+        product_id=UUID("550e8400-e29b-41d4-a716-446655440002"),
+        product_name="Mouse",
+        quantity=2,
+        price=Decimal("29.99")
+    )
+
+    return OrderResponse.from_entity(demo_order)
+
+
+@router.get(
     "/{order_id}",
     response_model=OrderResponse,
     summary="Find order by ID",
     description="Get order by unique identifier",
     responses={
         404: {
-            "description": "❌ Order not found",
+            "description": "Order not found",
             "content": {
                 "application/json": {
                     "example": {"detail": "Order not found"}
@@ -182,13 +223,20 @@ async def get_order(
 
 @router.delete(
     "/{order_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
     summary="Delete order",
     description="Delete order from system",
     responses={
-        204: {"description": "✅ Order successfully deleted"},
+        200: {
+            "description": "Order successfully deleted",
+            "content": {
+                "application/json": {
+                    "example": {"message": "Order successfully deleted"}
+                }
+            }
+        },
         404: {
-            "description": "❌ Order not found",
+            "description": "Order not found",
             "content": {
                 "application/json": {
                     "example": {"detail": "Order not found"}
@@ -200,7 +248,7 @@ async def get_order(
 async def delete_order(
     order_id: UUID,
     order_service: Annotated[OrderService, Depends(get_order_service)],
-) -> None:
+) -> dict[str, str]:
     """
     Delete order by ID.
 
@@ -212,45 +260,5 @@ async def delete_order(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Order not found"
         )
+    return {"message": "Order successfully deleted"}
 
-
-@router.get(
-    "/demo",
-    response_model=OrderResponse,
-    summary="🎬 Demo order",
-    description="Show example of complete order (doesn't create real order)",
-    tags=["demo"]
-)
-async def get_demo_order() -> OrderResponse:
-    """
-    Get demonstration order.
-
-    **Just click Execute!** You'll immediately see what real API response looks like.
-
-    This does NOT create actual order, just shows response format.
-    """
-    from decimal import Decimal
-    from src.core.entities.order import Order, OrderItem
-    from uuid import UUID
-
-    # Create demo order
-    demo_order = Order(
-        id=UUID("7c9e6679-7425-40de-944b-e07fc1f90ae7"),
-        customer_id=UUID("550e8400-e29b-41d4-a716-446655440000")
-    )
-
-    demo_order.add_item(
-        product_id=UUID("550e8400-e29b-41d4-a716-446655440001"),
-        product_name="Laptop",
-        quantity=1,
-        price=Decimal("999.99")
-    )
-
-    demo_order.add_item(
-        product_id=UUID("550e8400-e29b-41d4-a716-446655440002"),
-        product_name="Mouse",
-        quantity=2,
-        price=Decimal("29.99")
-    )
-
-    return OrderResponse.from_entity(demo_order)
