@@ -1,6 +1,5 @@
 """Base repository with generic CRUD operations."""
 
-from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 from uuid import UUID
 
@@ -8,7 +7,7 @@ from uuid import UUID
 TEntity = TypeVar("TEntity")
 
 
-class BaseRepository(ABC, Generic[TEntity]):
+class BaseRepository(Generic[TEntity]):
     """Base repository for in-memory storage."""
 
     def __init__(self) -> None:

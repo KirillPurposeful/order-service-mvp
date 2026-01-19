@@ -23,7 +23,6 @@ build/
 *.swp
 *.swo
 *~
-.DS_Store
 
 # Testing
 .pytest_cache/
@@ -57,8 +56,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
-*.swp
-*~
 
 # Server files
 server.log

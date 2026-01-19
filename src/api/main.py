@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
     for product in test_products:
         await product_repo.save(product)
 
-    print("✅ Test products initialized")
+    print("Test products initialized")
     print(f"   - {test_products[0].name} (ID: {test_products[0].id})")
     print(f"   - {test_products[1].name} (ID: {test_products[1].id})")
     print(f"   - {test_products[2].name} (ID: {test_products[2].id})")
@@ -59,13 +59,13 @@ async def lifespan(app: FastAPI):
     yield
 
     # Shutdown: cleanup if needed
-    print("👋 Application shutdown")
+    print("Application shutdown")
 
 
 app = FastAPI(
     title="Order Service",
     description="""
-## 🛒 Simple Order Management Service
+## Simple Order Management Service
 
 This API allows you to create orders and automatically reserve products in stock.
 
@@ -79,19 +79,18 @@ This API allows you to create orders and automatically reserve products in stock
 
 **Step 1:** Products are available with fixed IDs (see below)
 
-**Step 2:** Use endpoint below ⬇️ and click "Try it out"
+**Step 2:** Use endpoint below and click "Try it out"
 
 **Step 3:** Click "Execute"
 
-Done! 🎉
+Done!
     """,
     version="0.1.0",
     contact={
         "name": "Order Service Team",
-        "url": "https://github.com/yourrepo/order-service",
     },
     license_info={
-        "name": "MIT",
+        "name": "Kirill Purposeful Project",
     },
     lifespan=lifespan,
 )

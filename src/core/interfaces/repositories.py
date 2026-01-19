@@ -10,7 +10,7 @@ from src.core.entities.product import Product
 class OrderRepository(Protocol):
     """Order repository interface."""
 
-    async def save(self, order: Order) -> None:
+    async def save(self, order: Order) -> Order:
         """Save order."""
         ...
 
@@ -34,7 +34,7 @@ class ProductRepository(Protocol):
         """Get product by ID."""
         ...
 
-    async def save(self, product: Product) -> None:
+    async def save(self, product: Product) -> Product:
         """Save product."""
         ...
 
